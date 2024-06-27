@@ -1,55 +1,63 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.8.2/schema.json",
-	"organizeImports": {
-		"enabled": true
-	},
-	"linter": {
-		"enabled": true,
-		"rules": {
-			"recommended": true,
-			"style": {
-				"noNonNullAssertion": "off",
-				"useSelfClosingElements": "off",
-				"noUselessElse": "off",
-				"noUnusedTemplateLiteral": "off"
-			},
-			"a11y": {
-				"useKeyWithClickEvents": "off",
-				"noSvgWithoutTitle": "off"
-			},
-			"suspicious": {
-				"noExplicitAny": "off"
-			},
-			"nursery": {
-				"useSortedClasses": "error"
-			},
-			"correctness": {
-				"noUnreachable": "off"
-			},
-			"complexity": {
-				"noForEach": "off",
-				"noThisInStatic": "off",
-				"noStaticOnlyClass": "off",
-				"noBannedTypes": "off"
-			}
-		}
-	},
-	"formatter": {
-		"enabled": true,
-		"formatWithErrors": false,
-		"ignore": [],
-		"attributePosition": "auto",
-		"indentStyle": "tab",
-		"indentWidth": 2,
-		"lineWidth": 80,
-		"lineEnding": "lf"
-	},
-	"files": {
-		"include": ["src/**"]
-	},
-	"javascript": {
-		"parser": {
-			"unsafeParameterDecoratorsEnabled": true
-		}
-	}
+  "$schema": "https://biomejs.dev/schemas/1.8.2/schema.json",
+  "organizeImports": {
+    "enabled": true
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "style": {
+        "noNonNullAssertion": "off",
+        "useSelfClosingElements": "off",
+        "noUselessElse": "off",
+        "noUnusedTemplateLiteral": "off",
+        "useImportType": "off",
+        "noArguments": "off",
+        "noVar": "off",
+        "useSingleVarDeclarator": "off",
+        "noCommaOperator": "off",
+        "noParameterAssign": "off"
+      },
+      "a11y": {
+        "useKeyWithClickEvents": "off",
+        "noSvgWithoutTitle": "off"
+      },
+      "suspicious": {
+        "noExplicitAny": "off",
+        "noAssignInExpressions": "off"
+      },
+      "nursery": {
+        "useSortedClasses": "error"
+      },
+      "correctness": {
+        "noUnreachable": "off",
+        "noInnerDeclarations": "off"
+      },
+      "complexity": {
+        "noForEach": "off",
+        "noThisInStatic": "off",
+        "noStaticOnlyClass": "off",
+        "noBannedTypes": "off"
+      }
+    }
+  },
+  "formatter": {
+    "enabled": true,
+    "formatWithErrors": false,
+    "ignore": [],
+    "attributePosition": "auto",
+    "indentStyle": "tab",
+    "indentWidth": 2,
+    "lineWidth": 80,
+    "lineEnding": "lf"
+  },
+  "files": {
+    "include": ["src/**"]
+  },
+  "javascript": {
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
+    }
+  }
 }
