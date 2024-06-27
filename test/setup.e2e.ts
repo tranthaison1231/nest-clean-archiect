@@ -1,10 +1,12 @@
 import "dotenv/config";
-
-import { PrismaClient } from "@prisma/client";
 import { randomUUID } from "node:crypto";
 import { execSync } from "node:child_process";
+import { config } from "dotenv";
+import { recreatePrismaInstance } from "@/infra/database/prisma";
 
-const prisma = new PrismaClient();
+config({ path: ".env.test", override: true });
+
+let prisma: ReturnType<typeof recreatePrismaInstance>;
 
 function generateUniqueDatabaseURL(schemaId: string) {
   if (!process.env.DATABASE_URL) {
@@ -25,10 +27,12 @@ beforeAll(async () => {
 
   process.env.DATABASE_URL = databaseURL;
 
-  execSync("yarn prisma migrate deploy");
+  prisma = recreatePrismaInstance();
+
+  execSync(`export DATABASE_URL=${databaseURL} && npx prisma migrate deploy`);
 });
 
 afterAll(async () => {
-  await prisma.$executeRawUnsafe(`DROP SCHEMA IF EXISTS "${schemaId}" CASCADE`);
+  await prisma.$executeRawUnsafe(`DROP SCHEMA IF EXISTS "${schemaId}" CASCADE`); // To see the alternative database, comment out this line and check it in DBeaver.
   await prisma.$disconnect();
 });

@@ -5,6 +5,13 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator kysely {
+  provider  = "prisma-kysely"
+  camelCase = true
+  output    = "./"
+  fileName  = "kysely.ts"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -16,9 +23,9 @@ enum UserRole {
 }
 
 model User {
-  id String @id @default(uuid())
-  name String
-  email String @unique
+  id       String   @id @default(uuid())
+  name     String
+  email    String   @unique
   password String
   role     UserRole @default(STUDENT)
 
@@ -29,31 +36,33 @@ model User {
 }
 
 model Question {
-id           String    @id @default(uuid())
-title        String
-slug         String    @unique
-content      String
-createdAt    DateTime  @default(now()) @map("created_at")
-updatedAt    DateTime? @updatedAt @map("updated_at")
-authorId     String    @map("author_id")
-bestAnswerId String?   @unique @map("best_answer_id")
+  id           String    @id @default(uuid())
+  title        String
+  slug         String    @unique
+  content      String
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime? @updatedAt @map("updated_at")
+  authorId     String    @map("author_id")
+  bestAnswerId String?   @unique @map("best_answer_id")
 
-author     User     @relation(fields: [authorId], references: [id])
-bestAnswer Answer?  @relation("bestAnswer", fields: [bestAnswerId], references: [id])
-answers    Answer[]
+  author     User     @relation(fields: [authorId], references: [id])
+  bestAnswer Answer?  @relation("bestAnswer", fields: [bestAnswerId], references: [id])
+  answers    Answer[]
 
   @@map("questions")
 }
 
 model Answer {
-  id         String    @id @default(uuid())
-  content    String
-  createdAt  DateTime  @default(now()) @map("created_at")
-  updatedAt  DateTime? @updatedAt @map("updated_at")
-  authorId   String    @map("author_id")
-  questionId String    @map("question_id")
+  id           String    @id @default(uuid())
+  content      String
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime? @updatedAt @map("updated_at")
+  authorId     String    @map("author_id")
+  questionId   String    @map("question_id")
   author       User      @relation(fields: [authorId], references: [id])
   bestAnswerOn Question? @relation("bestAnswer")
   question     Question  @relation(fields: [questionId], references: [id])
+
   @@map("answers")
 }
+
