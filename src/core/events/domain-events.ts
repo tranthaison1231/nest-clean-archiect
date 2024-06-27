@@ -1,81 +1,83 @@
-import { AggregateRoot } from '../entities/aggregate-root'
-import { UniqueEntityID } from '../entities/unique-entity-id'
-import { DomainEvent } from './domain-event'
+import { AggregateRoot } from "../entities/aggregate-root";
+import { UniqueEntityID } from "../entities/unique-entity-id";
+import { DomainEvent } from "./domain-event";
 
-type DomainEventCallback = (event: any) => void
+type DomainEventCallback = (event: any) => void;
 
 export class DomainEvents {
-  private static handlersMap: Record<string, DomainEventCallback[]> = {}
-  private static markedAggregates: AggregateRoot<any>[] = []
+	private static handlersMap: Record<string, DomainEventCallback[]> = {};
+	private static markedAggregates: AggregateRoot<any>[] = [];
 
-  public static markAggregateForDispatch(aggregate: AggregateRoot<any>) {
-    const aggregateFound = !!this.findMarkedAggregateByID(aggregate.id)
+	public static markAggregateForDispatch(aggregate: AggregateRoot<any>) {
+		const aggregateFound = !!this.findMarkedAggregateByID(aggregate.id);
 
-    if (!aggregateFound) {
-      this.markedAggregates.push(aggregate)
-    }
-  }
+		if (!aggregateFound) {
+			this.markedAggregates.push(aggregate);
+		}
+	}
 
-  private static dispatchAggregateEvents(aggregate: AggregateRoot<any>) {
-    aggregate.domainEvents.forEach((event: DomainEvent) => this.dispatch(event))
-  }
+	private static dispatchAggregateEvents(aggregate: AggregateRoot<any>) {
+		aggregate.domainEvents.forEach((event: DomainEvent) =>
+			this.dispatch(event),
+		);
+	}
 
-  private static removeAggregateFromMarkedDispatchList(
-    aggregate: AggregateRoot<any>,
-  ) {
-    const index = this.markedAggregates.findIndex((a) => a.equals(aggregate))
+	private static removeAggregateFromMarkedDispatchList(
+		aggregate: AggregateRoot<any>,
+	) {
+		const index = this.markedAggregates.findIndex((a) => a.equals(aggregate));
 
-    this.markedAggregates.splice(index, 1)
-  }
+		this.markedAggregates.splice(index, 1);
+	}
 
-  private static findMarkedAggregateByID(
-    id: UniqueEntityID,
-  ): AggregateRoot<any> | undefined {
-    return this.markedAggregates.find((aggregate) => aggregate.id.equals(id))
-  }
+	private static findMarkedAggregateByID(
+		id: UniqueEntityID,
+	): AggregateRoot<any> | undefined {
+		return this.markedAggregates.find((aggregate) => aggregate.id.equals(id));
+	}
 
-  public static dispatchEventsForAggregate(id: UniqueEntityID) {
-    const aggregate = this.findMarkedAggregateByID(id)
+	public static dispatchEventsForAggregate(id: UniqueEntityID) {
+		const aggregate = this.findMarkedAggregateByID(id);
 
-    if (aggregate) {
-      this.dispatchAggregateEvents(aggregate)
-      aggregate.clearEvents()
-      this.removeAggregateFromMarkedDispatchList(aggregate)
-    }
-  }
+		if (aggregate) {
+			this.dispatchAggregateEvents(aggregate);
+			aggregate.clearEvents();
+			this.removeAggregateFromMarkedDispatchList(aggregate);
+		}
+	}
 
-  public static register(
-    callback: DomainEventCallback,
-    eventClassName: string,
-  ) {
-    const wasEventRegisteredBefore = eventClassName in this.handlersMap
+	public static register(
+		callback: DomainEventCallback,
+		eventClassName: string,
+	) {
+		const wasEventRegisteredBefore = eventClassName in this.handlersMap;
 
-    if (!wasEventRegisteredBefore) {
-      this.handlersMap[eventClassName] = []
-    }
+		if (!wasEventRegisteredBefore) {
+			this.handlersMap[eventClassName] = [];
+		}
 
-    this.handlersMap[eventClassName].push(callback)
-  }
+		this.handlersMap[eventClassName].push(callback);
+	}
 
-  public static clearHandlers() {
-    this.handlersMap = {}
-  }
+	public static clearHandlers() {
+		this.handlersMap = {};
+	}
 
-  public static clearMarkedAggregates() {
-    this.markedAggregates = []
-  }
+	public static clearMarkedAggregates() {
+		this.markedAggregates = [];
+	}
 
-  private static dispatch(event: DomainEvent) {
-    const eventClassName: string = event.constructor.name
+	private static dispatch(event: DomainEvent) {
+		const eventClassName: string = event.constructor.name;
 
-    const isEventRegistered = eventClassName in this.handlersMap
+		const isEventRegistered = eventClassName in this.handlersMap;
 
-    if (isEventRegistered) {
-      const handlers = this.handlersMap[eventClassName]
+		if (isEventRegistered) {
+			const handlers = this.handlersMap[eventClassName];
 
-      for (const handler of handlers) {
-        handler(event)
-      }
-    }
-  }
+			for (const handler of handlers) {
+				handler(event);
+			}
+		}
+	}
 }
